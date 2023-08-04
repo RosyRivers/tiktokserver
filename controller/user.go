@@ -89,7 +89,7 @@ func Login(c *gin.Context) {
 		})
 	} else {
 		c.JSON(http.StatusOK, UserLoginResponse{
-			Response: Response{StatusCode: 1, StatusMsg: "Find user by token error"},
+			Response: Response{StatusCode: 0, StatusMsg: "Find user by token error"},
 		})
 	}
 }
