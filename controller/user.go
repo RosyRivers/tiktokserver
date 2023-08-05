@@ -76,7 +76,7 @@ func Login(c *gin.Context) {
 	token := username + password
 
 	user, err := repository.NewUserDaoInstance().QueryUserByToken(token)
-	if err != nil {
+	if err == nil {
 		c.JSON(http.StatusOK, UserLoginResponse{
 			Response: Response{StatusCode: 0},
 			UserId:   user.Id,
@@ -86,10 +86,6 @@ func Login(c *gin.Context) {
 	if err == gorm.ErrRecordNotFound {
 		c.JSON(http.StatusOK, UserLoginResponse{
 			Response: Response{StatusCode: 1, StatusMsg: "User doesn't exist"},
-		})
-	} else {
-		c.JSON(http.StatusOK, UserLoginResponse{
-			Response: Response{StatusCode: 0, StatusMsg: "Find user by token error"},
 		})
 	}
 }

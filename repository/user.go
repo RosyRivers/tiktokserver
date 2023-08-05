@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"errors"
 	// "github.com/RaymondCode/simple-demo/util"
 	"fmt"
 	"gorm.io/gorm"
@@ -18,7 +19,7 @@ type User struct {
 }
 
 func (User) TableName() string {
-	return "user"
+	return "users"
 }
 
 type UserDao struct {
@@ -37,8 +38,8 @@ func NewUserDaoInstance() *UserDao {
 
 func (*UserDao) QueryUserByToken(token string) (*User, error) {
 	var user User
-	err := db.Where("token = ?", token).Find(&user).Error
-	if err == gorm.ErrRecordNotFound {
+	err := db.Where("token = ?", token).First(&user).Error
+	if errors.Is(gorm.ErrRecordNotFound, err) {
 		return nil, err
 	}
 	if err != nil {
