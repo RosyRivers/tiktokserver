@@ -15,3 +15,18 @@ CREATE TABLE `user`
 
 INSERT INTO `user`
 VALUES (1, 'zhanglei', 'zhangleidouyin', 1, '0', FALSE);
+use tiktok;
+ALTER TABLE users ADD INDEX idx_video_author (token);
+CREATE TABLE IF NOT EXISTS `video`
+(
+    `id`              bigint(20) unique not null auto_increment comment '主键ID',
+    `token`           varchar(128) not null comment '视频发布者ID',
+    `palyurl`         varchar(500) not null default 'https://www.w3schools.com/html/movie.mp4' comment '播放地址',
+    `coverurl`        varchar(500) not null default 'https://cdn.pixabay.com/photo/2016/03/27/18/10/bear-1283347_1280.jpg' comment '封面',
+    `favoritecount`   int(10) not null default 0 comment '点赞总数',
+    `commentcount`    int(10) not null default 0 comment '评论数',
+    `title`           varchar(128) not null default '' comment '视频标题',
+    PRIMARY KEY (`id`),
+    CONSTRAINT video_author FOREIGN KEY (token) references users (token)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4 comment = '视频表';
