@@ -10,12 +10,12 @@ import (
 )
 
 type User struct {
-	Id            int64  `gorm:"column:id"`
-	Name          string `gorm:"column:name"`
-	Token         string `gorm:"column:token"`
-	FollowCount   int64  `gorm:"column:followcount"`
-	FollowerCount int64  `gorm:"column:followercount"`
-	IsFollow      bool   `gorm:"column:isfollow"`
+	Id            int64  `gorm:"column:id" json:"id"`
+	Name          string `gorm:"column:name" json:"name"`
+	Token         string `gorm:"column:token" json:"token"`
+	FollowCount   int64  `gorm:"column:followcount" json:"follow_count"`
+	FollowerCount int64  `gorm:"column:followercount" json:"follower_count"`
+	IsFollow      bool   `gorm:"column:isfollow" json:"is_follow"`
 }
 
 func (User) TableName() string {
