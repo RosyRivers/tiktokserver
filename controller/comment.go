@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"github.com/RaymondCode/simple-demo/repository"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -20,13 +21,13 @@ func CommentAction(c *gin.Context) {
 	token := c.Query("token")
 	actionType := c.Query("action_type")
 
-	if user, exist := usersLoginInfo[token]; exist {
+	if user, err := repository.NewUserDaoInstance().QueryUserByToken(token); err == nil {
 		if actionType == "1" {
 			text := c.Query("comment_text")
 			c.JSON(http.StatusOK, CommentActionResponse{Response: Response{StatusCode: 0},
 				Comment: Comment{
 					Id:         1,
-					User:       user,
+					User:       *user,
 					Content:    text,
 					CreateDate: "05-01",
 				}})

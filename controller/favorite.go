@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"github.com/RaymondCode/simple-demo/repository"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -9,7 +10,7 @@ import (
 func FavoriteAction(c *gin.Context) {
 	token := c.Query("token")
 
-	if _, exist := usersLoginInfo[token]; exist {
+	if _, err := repository.NewUserDaoInstance().QueryUserByToken(token); err == nil {
 		c.JSON(http.StatusOK, Response{StatusCode: 0})
 	} else {
 		c.JSON(http.StatusOK, Response{StatusCode: 1, StatusMsg: "User doesn't exist"})

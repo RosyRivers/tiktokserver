@@ -3,10 +3,14 @@ package controller
 import (
 	"fmt"
 	"github.com/RaymondCode/simple-demo/repository"
+	"github.com/RaymondCode/simple-demo/utils"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"net/http"
 	"path/filepath"
+	"strings"
+	"sync/atomic"
+	"time"
 )
 
 type VideoListResponse struct {
@@ -15,11 +19,13 @@ type VideoListResponse struct {
 	Token     string  `json:"token"`
 }
 
+var videoIdSequence = int64(0)
+
 // Publish check token then save upload file to public directory
 func Publish(c *gin.Context) {
 	token := c.PostForm("token")
 	title := c.PostForm("title")
-
+	fmt.Println(token)
 	// date  := c.PostForm("date")
 
 	user, err := repository.NewUserDaoInstance().QueryUserByToken(token)
@@ -36,17 +42,42 @@ func Publish(c *gin.Context) {
 		})
 		return
 	}
-
 	filename := filepath.Base(title)
+	id, err := repository.NewVideoDaoInstance().QueryVideoLatest()
+	if id == -1 {
+		fmt.Println("query error:", err)
+		return
+	}
+	videoIdSequence = id
+	atomic.AddInt64(&videoIdSequence, 1)
 	// user := usersLoginInfo[token]
-	finalName := fmt.Sprintf("%d_%s.mp4", user.Id, filename)
-	saveFile := filepath.Join("./public/", finalName)
+	finalName := fmt.Sprintf("%d-%d-%s.mp4", user.Id, videoIdSequence, filename)
+	saveFile := filepath.Join("./public/video", finalName)
 	if err := c.SaveUploadedFile(data, saveFile); err != nil {
 		c.JSON(http.StatusOK, Response{
 			StatusCode: 1,
 			StatusMsg:  err.Error(),
 		})
 		return
+	}
+	videourl := []string{"http://192.168.1.9:8080/static/video", finalName}
+	playurl := strings.Join(videourl, "/")
+	CoverName := utils.SaveCover(saveFile, finalName)
+	pngurl := []string{"http://192.168.1.9:8080/static/cover", CoverName}
+	coverurl := strings.Join(pngurl, "/")
+	newVideo := &repository.Video{
+		Token:         token,
+		PlayUrl:       playurl,
+		CoverUrl:      coverurl,
+		FavoriteCount: 0,
+		CommentCount:  0,
+		Title:         title,
+		LastUpTime:    time.Now(),
+	}
+	if err := repository.NewVideoDaoInstance().CreateVideo(newVideo); err != nil {
+		c.JSON(http.StatusOK, VideoListResponse{
+			Response: Response{StatusCode: 1, StatusMsg: "insert video err:" + err.Error()},
+		})
 	}
 
 	c.JSON(http.StatusOK, Response{

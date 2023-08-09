@@ -1,7 +1,7 @@
 CREATE DATABASE IF NOT EXISTS `tiktok` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci */;
 USE `tiktok`;
-DROP TABLE IF EXISTS `user`;
-CREATE TABLE `user`
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE `users`
 (
     `id`                bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键id',
     `name`              varchar(128)        NOT NULL DEFAULT '' COMMENT '用户昵称',
@@ -13,7 +13,7 @@ CREATE TABLE `user`
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='用户表';
 
-INSERT INTO `user`
+INSERT INTO `users`
 VALUES (1, 'zhanglei', 'zhangleidouyin', 1, '0', FALSE);
 use tiktok;
 ALTER TABLE users ADD INDEX idx_video_author (token);

@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+	"github.com/RaymondCode/simple-demo/repository"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -24,7 +25,7 @@ func MessageAction(c *gin.Context) {
 	toUserId := c.Query("to_user_id")
 	content := c.Query("content")
 
-	if user, exist := usersLoginInfo[token]; exist {
+	if user, err := repository.NewUserDaoInstance().QueryUserByToken(token); err == nil {
 		userIdB, _ := strconv.Atoi(toUserId)
 		chatKey := genChatKey(user.Id, int64(userIdB))
 
@@ -51,7 +52,7 @@ func MessageChat(c *gin.Context) {
 	token := c.Query("token")
 	toUserId := c.Query("to_user_id")
 
-	if user, exist := usersLoginInfo[token]; exist {
+	if user, err := repository.NewUserDaoInstance().QueryUserByToken(token); err == nil {
 		userIdB, _ := strconv.Atoi(toUserId)
 		chatKey := genChatKey(user.Id, int64(userIdB))
 

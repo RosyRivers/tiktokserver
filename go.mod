@@ -3,6 +3,7 @@ module github.com/RaymondCode/simple-demo
 go 1.17
 
 require (
+	github.com/3d0c/gmf v0.0.0-20220906170454-be727bc5b56c
 	github.com/gavv/httpexpect/v2 v2.8.0
 	github.com/gin-gonic/gin v1.7.7
 	github.com/stretchr/testify v1.8.1
