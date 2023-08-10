@@ -49,13 +49,7 @@ func (*VideoDao) QueryVideoByAuthor(token string) (*[]Video, error) {
 	return &videoList, err
 }
 func (*VideoDao) QueryVideoLatest() (id int64, err error) {
-	var videoList []Video
-	result := db.Table("video").Select("MAX(id)").Find(&videoList)
-	if result.Error != nil {
-		return 0, nil
-	} else {
-		err = db.Table("video").Select("MAX(id)").Find(&id).Error
-	}
+	err = db.Table("video").Select("MAX(id)").Find(&id).Error
 	if err != nil {
 		fmt.Println(err.Error())
 		return -1, err

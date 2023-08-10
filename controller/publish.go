@@ -44,6 +44,9 @@ func Publish(c *gin.Context) {
 	}
 	filename := filepath.Base(title)
 	id, err := repository.NewVideoDaoInstance().QueryVideoLatest()
+	if err != nil {
+		return
+	}
 	if id == -1 {
 		fmt.Println("query error:", err)
 		return
@@ -53,16 +56,10 @@ func Publish(c *gin.Context) {
 	// user := usersLoginInfo[token]
 	finalName := fmt.Sprintf("%d-%d-%s.mp4", user.Id, videoIdSequence, filename)
 	saveFile := filepath.Join("./public/video", finalName)
-	if err := c.SaveUploadedFile(data, saveFile); err != nil {
-		c.JSON(http.StatusOK, Response{
-			StatusCode: 1,
-			StatusMsg:  err.Error(),
-		})
-		return
-	}
+
 	videourl := []string{"http://192.168.1.9:8080/static/video", finalName}
 	playurl := strings.Join(videourl, "/")
-	CoverName := utils.SaveCover(saveFile, finalName)
+	CoverName := fmt.Sprintf("%spng", finalName[0:len(finalName)-3])
 	pngurl := []string{"http://192.168.1.9:8080/static/cover", CoverName}
 	coverurl := strings.Join(pngurl, "/")
 	newVideo := &repository.Video{
@@ -79,7 +76,14 @@ func Publish(c *gin.Context) {
 			Response: Response{StatusCode: 1, StatusMsg: "insert video err:" + err.Error()},
 		})
 	}
-
+	if err := c.SaveUploadedFile(data, saveFile); err != nil {
+		c.JSON(http.StatusOK, Response{
+			StatusCode: 1,
+			StatusMsg:  err.Error(),
+		})
+		return
+	}
+	utils.SaveCover(saveFile, finalName)
 	c.JSON(http.StatusOK, Response{
 		StatusCode: 0,
 		StatusMsg:  finalName + " uploaded successfully",
@@ -96,7 +100,6 @@ func PublishList(c *gin.Context) {
 				StatusMsg: "User not exist\n"},
 		})
 	}
-
 	c.JSON(http.StatusOK, VideoListResponse{
 		Response: Response{
 			StatusCode: 0,

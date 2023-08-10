@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 )
 
-func SaveCover(InputPath string, filmname string) (CoverName string) {
+func SaveCover(InputPath string, filmname string) {
 	pngName := fmt.Sprintf("%spng", filmname[0:len(filmname)-3])
 	saveFile := filepath.Join("./public/cover", pngName)
 	cmd := exec.Command("ffmpeg", "-i", InputPath, "-ss", "00:00:00.001", "-vframes", "1", saveFile)
@@ -20,5 +20,4 @@ func SaveCover(InputPath string, filmname string) (CoverName string) {
 		return
 	}
 	fmt.Println("First frame extracted and saved as image:", saveFile)
-	return pngName
 }
