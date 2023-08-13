@@ -48,6 +48,19 @@ func (*VideoDao) QueryVideoByAuthor(token string) (*[]Video, error) {
 	}
 	return &videoList, err
 }
+func (*VideoDao) QueryVideoFeed() (*[]Video, error) {
+	var videoList []Video
+	err := db.Order("last_up_time desc").Limit(30).Find(&videoList).Error
+	if errors.Is(gorm.ErrRecordNotFound, err) {
+		return nil, err
+	}
+	if err != nil {
+		fmt.Println(err.Error())
+		return nil, err
+	}
+	return &videoList, err
+}
+
 func (*VideoDao) QueryVideoLatest() (id int64, err error) {
 	err = db.Table("video").Select("MAX(id)").Find(&id).Error
 	if err != nil {

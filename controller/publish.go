@@ -100,11 +100,29 @@ func PublishList(c *gin.Context) {
 				StatusMsg: "User not exist\n"},
 		})
 	}
+	videos, err := repository.NewVideoDaoInstance().QueryVideoByAuthor(token)
+	if err != nil {
+		c.JSON(http.StatusOK, VideoListResponse{
+			Response: Response{
+				StatusCode: 1,
+				StatusMsg:  "query video list err:" + err.Error(),
+			},
+		})
+	}
+	VideoList, err := ConvertVideoDBToJSON(videos)
+	if err != nil {
+		c.JSON(http.StatusOK, VideoListResponse{
+			Response: Response{StatusCode: 1,
+				StatusMsg: "videos are found, but Convert is failed"},
+		})
+	}
+
 	c.JSON(http.StatusOK, VideoListResponse{
 		Response: Response{
 			StatusCode: 0,
 		},
-		VideoList: DemoVideos,
+
+		VideoList: VideoList,
 		Token:     token,
 	})
 }
