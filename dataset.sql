@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS `video`
     `favouritecount`   int(10) not null default 0 comment '点赞总数',
     `commentcount`    int(10) not null default 0 comment '评论数',
     `title`           varchar(128) not null default '' comment '视频标题',
-    `uploadtime`    datetime not null default '1970-01-01' comment '视频上传时间'
+    `uploadtime`    datetime not null default '1970-01-01' comment '视频上传时间',
     PRIMARY KEY (`id`),
     CONSTRAINT video_author FOREIGN KEY (token) references users (token)
 ) ENGINE = InnoDB
