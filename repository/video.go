@@ -16,7 +16,7 @@ type Video struct {
 	FavoriteCount int64     `gorm:"column:favouritecount"`
 	CommentCount  int64     `gorm:"column:commentcount"`
 	Title         string    `gorm:"column:title"`
-	LastUpTime    time.Time `gorm:"column:last_up_time"`
+	UploadTime    time.Time `gorm:"column:uploadtime"`
 }
 
 func (Video) TableName() string {
@@ -50,7 +50,7 @@ func (*VideoDao) QueryVideoByAuthor(token string) (*[]Video, error) {
 }
 func (*VideoDao) QueryVideoFeed() (*[]Video, error) {
 	var videoList []Video
-	err := db.Order("last_up_time desc").Limit(30).Find(&videoList).Error
+	err := db.Order("uploadtime desc").Limit(30).Find(&videoList).Error
 	if errors.Is(gorm.ErrRecordNotFound, err) {
 		return nil, err
 	}

@@ -11,7 +11,6 @@ func initRouter(r *gin.Engine) {
 	r.Static("/static/video/", "./public/video")
 	r.Static("/static/cover/", "./public/cover")
 	r.LoadHTMLGlob("templates/*")
-
 	// home page
 	r.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", gin.H{

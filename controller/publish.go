@@ -69,7 +69,7 @@ func Publish(c *gin.Context) {
 		FavoriteCount: 0,
 		CommentCount:  0,
 		Title:         title,
-		LastUpTime:    time.Now(),
+		UploadTime:    time.Now(),
 	}
 	if err := repository.NewVideoDaoInstance().CreateVideo(newVideo); err != nil {
 		c.JSON(http.StatusOK, VideoListResponse{
