@@ -21,12 +21,17 @@ CREATE TABLE IF NOT EXISTS `video`
 (
     `id`              bigint(20) unique not null auto_increment comment '主键ID',
     `token`           varchar(128) not null comment '视频发布者ID',
-    `palyurl`         varchar(500) not null default 'https://www.w3schools.com/html/movie.mp4' comment '播放地址',
+    `playurl`         varchar(500) not null default 'https://www.w3schools.com/html/movie.mp4' comment '播放地址',
     `coverurl`        varchar(500) not null default 'https://cdn.pixabay.com/photo/2016/03/27/18/10/bear-1283347_1280.jpg' comment '封面',
-    `favoritecount`   int(10) not null default 0 comment '点赞总数',
+    `favouritecount`   int(10) not null default 0 comment '点赞总数',
     `commentcount`    int(10) not null default 0 comment '评论数',
     `title`           varchar(128) not null default '' comment '视频标题',
+    `uploadtime`    datetime not null default '1970-01-01' comment '视频上传时间'
     PRIMARY KEY (`id`),
     CONSTRAINT video_author FOREIGN KEY (token) references users (token)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 comment = '视频表';
+
+insert into video
+(token, playurl, coverurl, favouritecount, commentcount, title, uploadtime) values('zhangleidouyin', 'https://www.w3schools.com/html/movie.mp4',
+ 'https://cdn.pixabay.com/photo/2016/03/27/18/10/bear-1283347_1280.jpg', 0, 0, 'bear', '1970-01-01');

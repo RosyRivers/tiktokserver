@@ -20,6 +20,14 @@ type VideoListResponse struct {
 }
 
 var videoIdSequence = int64(0)
+var serverDomain string
+
+func GetServerDomain(c *gin.Context) {
+	// 获取服务器的域名
+	domain := c.Request.Host
+	// 保存域名到变量
+	serverDomain = domain
+}
 
 // Publish check token then save upload file to public directory
 func Publish(c *gin.Context) {
@@ -57,10 +65,10 @@ func Publish(c *gin.Context) {
 	finalName := fmt.Sprintf("%d-%d-%s.mp4", user.Id, videoIdSequence, filename)
 	saveFile := filepath.Join("./public/video", finalName)
 
-	videourl := []string{"http://192.168.1.9:8080/static/video", finalName}
+	videourl := []string{"https:/", serverDomain, "static/video", finalName}
 	playurl := strings.Join(videourl, "/")
 	CoverName := fmt.Sprintf("%spng", finalName[0:len(finalName)-3])
-	pngurl := []string{"http://192.168.1.9:8080/static/cover", CoverName}
+	pngurl := []string{"https:/", serverDomain, "static/cover", CoverName}
 	coverurl := strings.Join(pngurl, "/")
 	newVideo := &repository.Video{
 		Token:         token,
@@ -69,7 +77,7 @@ func Publish(c *gin.Context) {
 		FavoriteCount: 0,
 		CommentCount:  0,
 		Title:         title,
-		LastUpTime:    time.Now(),
+		UploadTime:    time.Now(),
 	}
 	if err := repository.NewVideoDaoInstance().CreateVideo(newVideo); err != nil {
 		c.JSON(http.StatusOK, VideoListResponse{
